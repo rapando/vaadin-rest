@@ -1,30 +1,31 @@
 package com.example.application.views.helloworld;
 
+import com.example.application.data.AppDTO;
+import com.example.application.data.AsyncRestClientService;
+import com.example.application.data.RestClientService;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Main;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Hello World")
-public class HelloWorldView extends HorizontalLayout {
+public class HelloWorldView extends Main {
 
-    private TextField name;
-    private Button sayHello;
+    public HelloWorldView(@Autowired RestClientService service) {
+        final Grid<AppDTO> appsGrid = new Grid<AppDTO>(AppDTO.class);
 
-    public HelloWorldView() {
-        addClassName("hello-world-view");
-        name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        add(name, sayHello);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello);
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
-        });
+        final Button fetchApps = new Button("Fetch All Comments", e -> appsGrid.setItems(service.getAllApps()));
+        fetchApps.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        add(fetchApps, appsGrid);
     }
+
 
 }
